@@ -1,3 +1,3 @@
 # floracare-landing-page
  modern landing page for FloraCare that showcases the plant care service with an elegant design and interactive elements.
- ![alt](<img width="2560" height="1440" alt="image" src="https://github.com/user-attachments/assets/eb4b496e-9a9e-4983-8243-a94d6ef7ae6d" />)
+ ![alt](https://github.com/hajarLafdaoui/floracare-landing-page/blob/main/FloraCare%20_%20Premium%20Plant%20Services%20-%20Google%20Chrome%208_7_2025%207_35_39%20PM.png?raw=true)
