@@ -84,10 +84,8 @@ export default {
         });
       });
     }
-  
 }
 </script>
-
 <style lang="scss">
 @import './styles/main.scss';
 </style>
