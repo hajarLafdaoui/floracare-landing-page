@@ -1,0 +1,91 @@
+footer {
+    background: $dark-color;
+    color: $white;
+    padding-top: 80px;
+
+    .footer-content {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 40px;
+        margin-bottom: 60px;
+
+        .footer-column {
+            h3 {
+                font-size: 1.5rem;
+                margin-bottom: 25px;
+                position: relative;
+                padding-bottom: 15px;
+
+                &:after {
+                    content: '';
+                    position: absolute;
+                    bottom: 0;
+                    left: 0;
+                    width: 50px;
+                    height: 2px;
+                    background: $primary-color;
+                }
+            }
+
+            p {
+                color: $dark-gray;
+                line-height: 1.6;
+                margin-bottom: 20px;
+            }
+
+            .social-links {
+                display: flex;
+                gap: 15px;
+
+                a {
+                    display: inline-flex;
+                    justify-content: center;
+                    align-items: center;
+                    width: 40px;
+                    height: 40px;
+                    background: rgba(255,255,255,0.1);
+                    border-radius: 50%;
+                    color: $white;
+                    transition: all 0.3s ease;
+
+                    &:hover {
+                        background: $primary-color;
+                        transform: translateY(-3px);
+                    }
+                }
+            }
+
+            .footer-links {
+                list-style: none;
+
+                li {
+                    margin-bottom: 15px;
+
+                    a, li {
+                        color: $dark-gray;
+                        text-decoration: none;
+                        transition: color 0.3s ease;
+                        display: flex;
+                        align-items: center;
+
+                        i {
+                            margin-right: 10px;
+                        }
+                    }
+
+                    a:hover {
+                        color: $primary-color;
+                    }
+                }
+            }
+        }
+    }
+
+    .copyright {
+        text-align: center;
+        padding: 25px 0;
+        border-top: 1px solid rgba(255,255,255,0.1);
+        color: $dark-gray;
+        font-size: 0.9rem;
+    }
+}

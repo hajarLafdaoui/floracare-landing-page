@@ -1,0 +1,46 @@
+.features {
+    padding: 100px 0;
+
+    .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+
+        .feature-card {
+            background: $white;
+            padding: 40px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            text-align: center;
+            transition: transform 0.3s ease;
+
+            &:hover {
+                transform: translateY(-10px);
+            }
+
+            .feature-icon {
+                width: 80px;
+                height: 80px;
+                background: $light-color;
+                border-radius: 50%;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin: 0 auto 25px;
+                font-size: 2rem;
+                color: $primary-color;
+            }
+
+            .feature-title {
+                font-size: 1.5rem;
+                margin-bottom: 15px;
+                color: $dark-color;
+            }
+
+            .feature-description {
+                color: $light-text;
+                line-height: 1.7;
+            }
+        }
+    }
+}

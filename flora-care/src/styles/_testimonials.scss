@@ -1,0 +1,86 @@
+.testimonials {
+    padding: 100px 0;
+
+    .testimonials-container {
+        overflow: hidden;
+        margin-bottom: 40px;
+    }
+
+    .testimonial-row {
+        display: flex;
+        transition: transform 0.5s ease;
+    }
+
+    .testimonial-card {
+        background: $white;
+        padding: 40px;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        margin: 0 15px;
+        min-width: calc(33.333% - 30px);
+        flex: 0 0 calc(33.333% - 30px);
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: $light-text;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+
+            .client-avatar {
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                overflow: hidden;
+                margin-right: 15px;
+
+                img {
+                    width: 100%;
+                    height: 100%;
+                    object-fit: cover;
+                }
+            }
+
+            .client-name {
+                font-weight: 600;
+                color: $dark-color;
+            }
+
+            .client-position {
+                font-size: 0.9rem;
+                color: $light-text;
+            }
+        }
+    }
+
+    .carousel-controls {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+
+        .carousel-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: $white;
+            border: 1px solid $gray;
+            color: $primary-color;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: $primary-color;
+                color: $white;
+                border-color: $primary-color;
+            }
+        }
+    }
+}
