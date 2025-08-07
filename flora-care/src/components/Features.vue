@@ -39,33 +39,80 @@ export default {
     }
   },
   mounted() {
-    this.animateFeatures()
-  },
-  methods: {
-    animateFeatures() {
-      this.$gsap.to('.section-title', {
-        scrollTrigger: {
-          trigger: '.features',
-          start: 'top 90%'
-        },
-        duration: 0.8,
-        opacity: 1,
-        y: 0,
-        ease: 'power2.out'
-      })
-      
-      this.$gsap.to('.feature-card', {
-        scrollTrigger: {
-          trigger: '.features',
-          start: 'top 80%'
-        },
-        duration: 0.8,
-        opacity: 1,
-        y: 0,
-        stagger: 0.2,
-        ease: 'power2.out'
-      })
-    }
+    this.$gsap.to('.section-title', {
+      scrollTrigger: {
+        trigger: '.features',
+        start: 'top 80%',
+        toggleActions: 'play none none none'
+      },
+      y: 0,
+      opacity: 1,
+      duration: 1.5,
+      ease: "power2.out"
+    });
+
+    this.$gsap.to('.feature-card', {
+      scrollTrigger: {
+        trigger: '.features',
+        start: 'top 80%',
+        toggleActions: 'play none none none',
+        stagger: 0.3
+      },
+      y: 0,
+      opacity: 1,
+      duration: 1.2,
+      stagger: 0.3,
+      ease: "elastic.out(1, 0.75)"
+    });
   }
 }
 </script>
+
+<style scoped>
+.features {
+  padding: 60px 0;
+  background-color: #f9f9f9;
+}
+
+.section-title {
+  font-size: 2.5rem;
+  margin-bottom: 40px;
+  text-align: center;
+}
+
+.features-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+}
+
+.feature-card {
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+  transition: transform 0.3s;
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+.feature-card:hover {
+  transform: translateY(0);
+}
+
+.feature-icon {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+  color: #4caf50;
+}
+
+.feature-title {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.feature-description {
+  font-size: 1rem;
+  color: #666;
+}
+</style>

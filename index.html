@@ -9,7 +9,1071 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <link rel="stylesheet" href="styles.css">
+    <style>
+        :root {
+            --primary: #2e7d32;
+            --primary-light: #4caf50;
+            --secondary: #ff9800;
+            --dark: #1b5e20;
+            --light: #f5f9f5;
+            --text: #333333;
+            --gray: #78909c;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: var(--text);
+            overflow-x: hidden;
+            background-color: #fff;
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.8s ease;
+        }
+
+        .preloader.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .preloader-logo {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .preloader-icon {
+            font-size: 5rem;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .preloader-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 2px;
+            display: inline-block;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Header styles */
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            transform: translateY(-100%);
+            opacity: 0;
+        }
+
+        header.visible {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        header.scrolled {
+            background-color: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            padding: 10px 0;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .logo i {
+            margin-right: 10px;
+        }
+
+        nav {
+            transition: all 0.5s ease;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin: 0 15px;
+        }
+
+        nav ul li a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            position: relative;
+            padding: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.5s ease;
+        }
+
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+
+        .cta-button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .cta-button:hover {
+            background: var(--dark);
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 7px 20px rgba(46, 125, 50, 0.4);
+        }
+
+        /* Hero section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            opacity: 0;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 600px;
+            transform: translateX(-30px);
+            opacity: 0;
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            color: var(--dark);
+            overflow: hidden;
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray);
+            margin-bottom: 30px;
+            max-width: 500px;
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            transform: translateY(30px);
+            opacity: 0;
+        }
+
+        .outline-button {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 28px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .outline-button:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .hero-image {
+            position: absolute;
+            right: -5%;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50%;
+            max-width: 700px;
+            z-index: 1;
+            opacity: 0;
+            transform: translateY(-50%) translateX(100px);
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: auto;
+            object-fit: contain;
+            border-radius: 20px;
+            box-shadow: 0 30px 50px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Features section */
+        .features {
+            padding: 100px 0;
+            background-color: white;
+        }
+
+        .section-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 60px;
+            color: var(--dark);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 40px;
+        }
+
+        .feature-card {
+            background: var(--light);
+            border-radius: 20px;
+            padding: 40px 30px;
+            text-align: center;
+            transition: all 0.5s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px) scale(1.03);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            transition: transform 0.5s ease;
+        }
+
+        .feature-icon i {
+            font-size: 36px;
+            color: white;
+            transition: transform 0.5s ease;
+        }
+
+        .feature-card:hover .feature-icon {
+            transform: rotate(15deg);
+        }
+
+        .feature-card:hover .feature-icon i {
+            transform: scale(1.2);
+        }
+
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .feature-description {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* How it works section */
+        .how-it-works {
+            padding: 100px 0;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+        }
+
+        .steps {
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .steps::before {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 10%;
+            width: 0;
+            height: 4px;
+            background: var(--primary-light);
+            z-index: 1;
+            transition: width 1.5s ease;
+        }
+
+        .step {
+            text-align: center;
+            position: relative;
+            z-index: 2;
+            width: 30%;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .step-number {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border: 4px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0 auto 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.5s ease;
+        }
+
+        .step:hover .step-number {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .step-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+
+        .step-description {
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* Testimonials section */
+        .testimonials {
+            padding: 100px 0;
+            background-color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonials-container {
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            min-height: 300px;
+        }
+
+        .testimonial-row {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+            position: relative;
+            transition: all 0.5s ease;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .testimonial-card::before {
+            content: '"';
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 4rem;
+            color: var(--primary-light);
+            opacity: 0.2;
+            font-family: serif;
+        }
+
+        .testimonial-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: var(--text);
+            margin-bottom: 20px;
+        }
+
+        .client-info {
+            display: flex;
+            align-items: center;
+        }
+
+        .client-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-right: 15px;
+            border: 2px solid var(--primary-light);
+            transition: all 0.5s ease;
+        }
+
+        .testimonial-card:hover .client-avatar {
+            transform: scale(1.1);
+            border-color: var(--primary);
+        }
+
+        .client-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .testimonial-card:hover .client-avatar img {
+            transform: scale(1.1);
+        }
+
+        .client-name {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        .client-position {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .carousel-controls {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+            gap: 15px;
+        }
+
+        .carousel-btn {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--light);
+            border: 2px solid var(--primary-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            font-size: 1.2rem;
+            color: var(--primary);
+        }
+
+        .carousel-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .carousel-indicators {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            gap: 10px;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--light);
+            border: 2px solid var(--primary-light);
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .indicator.active {
+            background: var(--primary);
+        }
+
+        /* CTA section */
+        .cta-section {
+            padding: 100px 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            text-align: center;
+            color: white;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .cta-subtitle {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 40px;
+            opacity: 0.9;
+        }
+
+        .cta-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .cta-form input {
+            flex: 1;
+            padding: 18px 25px;
+            border: none;
+            border-radius: 50px 0 0 50px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .cta-form input:focus {
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.3);
+        }
+
+        .cta-form button {
+            background: var(--secondary);
+            color: white;
+            border: none;
+            padding: 18px 35px;
+            border-radius: 0 50px 50px 0;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+
+        .cta-form button:hover {
+            background: #ff8c00;
+            transform: scale(1.05);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 70px 0 30px;
+            opacity: 0;
+            transform: translateY(50px);
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 50px;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--primary-light);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 15px;
+        }
+
+        .footer-links a {
+            color: #bdbdbd;
+            text-decoration: none;
+            transition: all 0.5s ease;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            padding-left: 5px;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.5s ease;
+        }
+
+        .social-links a:hover {
+            background: var(--primary-light);
+            transform: translateY(-5px) scale(1.1);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #bdbdbd;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 992px) {
+            .features-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .hero-title {
+                font-size: 3.5rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .steps {
+                flex-direction: column;
+                align-items: center;
+                gap: 50px;
+            }
+            
+            .steps::before {
+                display: none;
+            }
+            
+            .step {
+                width: 100%;
+                max-width: 350px;
+            }
+            
+            .hero-content {
+                text-align: center;
+                margin: 0 auto;
+            }
+            
+            .hero-buttons {
+                justify-content: center;
+            }
+            
+            .hero-image {
+                display: none;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonial-row {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            nav {
+                display: none;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-form {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .cta-form input,
+            .cta-form button {
+                border-radius: 50px;
+                width: 100%;
+            }
+        }
+
+        /* Auth Modal Styles */
+        .auth-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        .auth-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .auth-modal {
+            background-color: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 450px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            transform: translateY(30px);
+            opacity: 0;
+            transition: all 0.8s ease;
+            position: relative;
+        }
+        
+        .auth-modal-overlay.active .auth-modal {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        
+        .modal-header {
+            display: flex;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            background: white;
+            z-index: 10;
+        }
+        
+        .modal-tab {
+            flex: 1;
+            text-align: center;
+            padding: 18px 0;
+            font-weight: 600;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.5s ease;
+        }
+        
+        .modal-tab.active {
+            color: var(--primary);
+        }
+        
+        .modal-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--primary);
+            transition: width 0.5s ease;
+        }
+        
+        .modal-body {
+            padding: 25px;
+        }
+        
+        .auth-form {
+            display: none;
+        }
+        
+        .auth-form.active {
+            display: block;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 500;
+            color: var(--dark);
+            font-size: 0.95rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 12px 14px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 15px;
+            transition: all 0.5s ease;
+        }
+        
+        .form-control:focus {
+            border-color: var(--primary-light);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(46, 125, 50, 0.2);
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: var(--gray);
+            font-size: 0.9rem;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-password:hover {
+            transform: translateY(-50%) scale(1.1);
+        }
+        
+        .form-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+        
+        .remember-me {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+        
+        .remember-me input {
+            margin-right: 6px;
+        }
+        
+        .forgot-password {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.5s ease;
+            font-size: 0.9rem;
+        }
+        
+        .forgot-password:hover {
+            color: var(--dark);
+            transform: translateX(3px);
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 14px;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.5s ease;
+            margin-top: 15px;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+        }
+        
+        .submit-btn:hover {
+            background-color: var(--dark);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 7px 20px rgba(46, 125, 50, 0.4);
+        }
+        
+        .divider {
+            text-align: center;
+            margin: 20px 0;
+            position: relative;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        .divider::before,
+        .divider::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            width: 40%;
+            height: 1px;
+            background-color: #eee;
+            transition: width 0.5s ease;
+        }
+        
+        .divider::before {
+            left: 0;
+        }
+        
+        .divider::after {
+            right: 0;
+        }
+        
+        .social-login {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .social-btn {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #f5f5f5;
+            border: 1px solid #eee;
+            cursor: pointer;
+            transition: all 0.5s ease;
+        }
+        
+        .social-btn:hover {
+            background: #e8f5e9;
+            transform: translateY(-3px) scale(1.1);
+        }
+        
+        .social-btn i {
+            font-size: 18px;
+            transition: transform 0.3s ease;
+        }
+        
+        .social-btn:hover i {
+            transform: scale(1.2);
+        }
+        
+        .google-btn { color: #DB4437; }
+        .facebook-btn { color: #4267B2; }
+        .apple-btn { color: #000; }
+        
+        .signup-link {
+            text-align: center;
+            margin-top: 15px;
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        .signup-link a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            margin-left: 5px;
+            transition: all 0.5s ease;
+        }
+        
+        .signup-link a:hover {
+            color: var(--dark);
+            transform: translateX(3px);
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: #f5f5f5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            color: var(--gray);
+            transition: all 0.5s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            z-index: 20;
+        }
+        
+        .close-modal:hover {
+            color: var(--primary);
+            transform: rotate(90deg) scale(1.1);
+            background: #e8f5e9;
+        }
+    </style>
 </head>
 <body>
     <!-- Preloader -->
@@ -19,6 +1083,112 @@
                 <i class="fas fa-leaf"></i>
             </span>
             <span class="preloader-text" id="preloaderText"></span>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="auth-modal-overlay" id="authModal">
+        <div class="auth-modal">
+            <div class="close-modal" id="closeModal">
+                <i class="fas fa-times"></i>
+            </div>
+            <div class="modal-header">
+                <div class="modal-tab active" data-tab="login">Sign In</div>
+                <div class="modal-tab" data-tab="signup">Sign Up</div>
+            </div>
+            <div class="modal-body">
+                <!-- Login Form -->
+                <form class="auth-form active" id="loginForm">
+                    <div class="form-group">
+                        <label for="loginEmail">Email Address</label>
+                        <input type="email" id="loginEmail" class="form-control" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="loginPassword">Password</label>
+                        <div class="password-container">
+                            <input type="password" id="loginPassword" class="form-control" placeholder="Enter your password">
+                            <span class="toggle-password" id="toggleLoginPassword">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-footer">
+                        <div class="remember-me">
+                            <input type="checkbox" id="remember">
+                            <label for="remember">Remember me</label>
+                        </div>
+                        <a href="#" class="forgot-password">Forgot Password?</a>
+                    </div>
+                    <button type="button" class="submit-btn">Sign In</button>
+                    
+                    <div class="divider">or continue with</div>
+                    
+                    <div class="social-login">
+                        <div class="social-btn google-btn">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="social-btn facebook-btn">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                        <div class="social-btn apple-btn">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="signup-link">
+                        Don't have an account? <a href="#" data-tab="signup">Sign up</a>
+                    </div>
+                </form>
+                
+                <!-- Sign Up Form -->
+                <form class="auth-form" id="signupForm">
+                    <div class="form-group">
+                        <label for="signupName">Full Name</label>
+                        <input type="text" id="signupName" class="form-control" placeholder="Enter your full name">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupEmail">Email Address</label>
+                        <input type="email" id="signupEmail" class="form-control" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label for="signupPassword">Password</label>
+                        <div class="password-container">
+                            <input type="password" id="signupPassword" class="form-control" placeholder="Create a password">
+                            <span class="toggle-password" id="toggleSignupPassword">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="signupConfirmPassword">Confirm Password</label>
+                        <div class="password-container">
+                            <input type="password" id="signupConfirmPassword" class="form-control" placeholder="Confirm your password">
+                            <span class="toggle-password" id="toggleSignupConfirmPassword">
+                                <i class="fas fa-eye"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <button type="button" class="submit-btn">Create Account</button>
+                    
+                    <div class="divider">or continue with</div>
+                    
+                    <div class="social-login">
+                        <div class="social-btn google-btn">
+                            <i class="fab fa-google"></i>
+                        </div>
+                        <div class="social-btn facebook-btn">
+                            <i class="fab fa-facebook-f"></i>
+                        </div>
+                        <div class="social-btn apple-btn">
+                            <i class="fab fa-apple"></i>
+                        </div>
+                    </div>
+                    
+                    <div class="signup-link">
+                        Already have an account? <a href="#" data-tab="login">Sign in</a>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -39,7 +1209,7 @@
                             <li><a href="#">About</a></li>
                         </ul>
                     </nav>
-                    <button class="cta-button">Get Started</button>
+                    <button class="cta-button" id="headerGetStarted">Get Started</button>
                 </div>
             </div>
         </header>
@@ -55,13 +1225,13 @@
                     </h1>
                     <p class="hero-subtitle">Professional plant care services that bring life and vitality to your indoor and outdoor spaces with our expert horticulturalists.</p>
                     <div class="hero-buttons">
-                        <button class="cta-button">Book Consultation</button>
+                        <button class="cta-button" id="heroGetStarted">Book Consultation</button>
                         <button class="outline-button">Learn More</button>
                     </div>
                 </div>
             </div>
             <div class="hero-image">
-                <img src="https://images.unsplash.com/photo-1485955900006-10f4d324d411?auto=format&fit=crop&w=600&h=800&q=80" alt="Plant Care">
+                <img src="https://images.unsplash.com/photo-1512428813834-c702c7702b78?auto=format&fit=crop&w=600&h=800&q=80" alt="Plant Care">
             </div>
         </section>
 
@@ -159,7 +1329,7 @@
                 <p class="cta-subtitle">Join hundreds of plant lovers who trust FloraCare to keep their greenery thriving. Sign up now for a free consultation.</p>
                 <div class="cta-form">
                     <input type="email" placeholder="Enter your email address">
-                    <button>Get Started</button>
+                    <button id="ctaGetStarted">Get Started</button>
                 </div>
             </div>
         </section>
@@ -214,6 +1384,407 @@
         </footer>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+        // Vue App
+        const app = new Vue({
+            el: '#app',
+            data: {
+                isScrolled: false,
+                headerVisible: false,
+                testimonials: [
+                    {
+                        text: "FloraCare transformed my balcony garden! Their experts helped me select the perfect plants for my space and maintain them beautifully.",
+                        name: "Sarah Johnson",
+                        position: "Homeowner",
+                        avatar: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80"
+                    },
+                    {
+                        text: "I've never been able to keep plants alive until FloraCare started helping me. Now my home is filled with thriving greenery!",
+                        name: "Michael Chen",
+                        position: "Apartment Dweller",
+                        avatar: "https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80"
+                    },
+                    {
+                        text: "Professional, knowledgeable, and passionate about plants. The FloraCare team has made my office space come alive!",
+                        name: "Emily Rodriguez",
+                        position: "Business Owner",
+                        avatar: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80"
+                    },
+                    {
+                        text: "Their irrigation system solution saved my garden during the drought season. Worth every penny!",
+                        name: "David Wilson",
+                        position: "Landscape Enthusiast",
+                        avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80"
+                    },
+                    {
+                        text: "I travel frequently and FloraCare keeps my plants healthy while I'm away. Highly recommend their services!",
+                        name: "Jennifer Kim",
+                        position: "Frequent Traveler",
+                        avatar: "https://images.unsplash.com/photo-1544725176-7c40e5a71c5e?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80"
+                    },
+                    {
+                        text: "The plant consultation helped me transform my dark living room into a green oasis with the right low-light plants.",
+                        name: "Thomas Parker",
+                        position: "Plant Newbie",
+                        avatar: "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?ixlib=rb-1.2.1&auto=format&fit=crop&w=200&h=200&q=80"
+                    }
+                ],
+                testimonialsPerSet: 2,
+                currentTestimonialSet: 0
+            },
+            computed: {
+                visibleTestimonials() {
+                    const startIndex = this.currentTestimonialSet * this.testimonialsPerSet;
+                    return this.testimonials.slice(startIndex, startIndex + this.testimonialsPerSet);
+                }
+            },
+            methods: {
+                prevTestimonialSet() {
+                    if (this.currentTestimonialSet > 0) {
+                        this.currentTestimonialSet--;
+                    } else {
+                        this.currentTestimonialSet = Math.floor(this.testimonials.length / this.testimonialsPerSet) - 1;
+                    }
+                },
+                nextTestimonialSet() {
+                    if ((this.currentTestimonialSet + 1) * this.testimonialsPerSet < this.testimonials.length) {
+                        this.currentTestimonialSet++;
+                    } else {
+                        this.currentTestimonialSet = 0;
+                    }
+                },
+                handleScroll() {
+                    this.isScrolled = window.scrollY > 50;
+                }
+            },
+            mounted() {
+                // Header visibility
+                setTimeout(() => {
+                    this.headerVisible = true;
+                }, 500);
+                
+                // Scroll event
+                window.addEventListener('scroll', this.handleScroll);
+                
+                // Preloader animation
+                const preloader = document.getElementById('preloader');
+                const preloaderText = document.getElementById('preloaderText');
+                
+                let text = "FloraCare";
+                let index = 0;
+                
+                const typeWriter = () => {
+                    if (index < text.length) {
+                        preloaderText.textContent += text.charAt(index);
+                        index++;
+                        setTimeout(typeWriter, 150);
+                    } else {
+                        setTimeout(() => {
+                            preloader.classList.add('hidden');
+                        }, 1000);
+                    }
+                };
+                
+                typeWriter();
+                
+                // Animation for elements
+                gsap.registerPlugin(ScrollTrigger);
+                
+                const animateElements = () => {
+                    // Hero section
+                    gsap.to('.hero', {
+                        opacity: 1,
+                        duration: 1.5,
+                        delay: 0.5
+                    });
+                    
+                    gsap.to('.hero-content', {
+                        x: 0,
+                        opacity: 1,
+                        duration: 1.5,
+                        delay: 0.8,
+                        ease: "power2.out"
+                    });
+                    
+                    gsap.to('.hero-title', {
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        delay: 1.0,
+                        stagger: 0.3,
+                        ease: "back.out(1.7)"
+                    });
+                    
+                    gsap.to('.hero-subtitle', {
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        delay: 1.5,
+                        ease: "power2.out"
+                    });
+                    
+                    gsap.to('.hero-buttons', {
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        delay: 1.8,
+                        stagger: 0.2,
+                        ease: "elastic.out(1, 0.75)"
+                    });
+                    
+                    gsap.to('.hero-image', {
+                        x: 0,
+                        opacity: 1,
+                        duration: 1.8,
+                        delay: 1.2,
+                        ease: "expo.out"
+                    });
+                    
+                    // Logo animation
+                    gsap.to('.logo', {
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        delay: 0.8,
+                        ease: "power2.out"
+                    });
+                    
+                    gsap.to('.cta-button', {
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        delay: 1.0,
+                        ease: "power2.out"
+                    });
+                    
+                    // Features animation
+                    gsap.to('.section-title', {
+                        scrollTrigger: {
+                            trigger: '.features',
+                            start: 'top 80%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.5,
+                        ease: "power2.out"
+                    });
+                    
+                    gsap.to('.feature-card', {
+                        scrollTrigger: {
+                            trigger: '.features',
+                            start: 'top 80%',
+                            toggleActions: 'play none none none',
+                            stagger: 0.3
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        stagger: 0.3,
+                        ease: "elastic.out(1, 0.75)"
+                    });
+                    
+                    // How it works animation
+                    gsap.to('.how-it-works .section-title', {
+                        scrollTrigger: {
+                            trigger: '.how-it-works',
+                            start: 'top 80%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.5,
+                        ease: "power2.out"
+                    });
+                    
+                    gsap.to('.steps::before', {
+                        scrollTrigger: {
+                            trigger: '.steps',
+                            start: 'top 80%',
+                            toggleActions: 'play none none none'
+                        },
+                        width: '80%',
+                        duration: 2,
+                        ease: "power2.out"
+                    });
+                    
+                    gsap.to('.step', {
+                        scrollTrigger: {
+                            trigger: '.steps',
+                            start: 'top 80%',
+                            toggleActions: 'play none none none',
+                            stagger: 0.3
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        stagger: 0.4,
+                        ease: "back.out(1.7)"
+                    });
+                    
+                    // Testimonials animation
+                    gsap.to('.testimonials .section-title', {
+                        scrollTrigger: {
+                            trigger: '.testimonials',
+                            start: 'top 80%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.5,
+                        ease: "power2.out"
+                    });
+                    
+                    gsap.to('.testimonial-card', {
+                        scrollTrigger: {
+                            trigger: '.testimonials',
+                            start: 'top 80%',
+                            toggleActions: 'play none none none',
+                            stagger: 0.3
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        stagger: 0.3,
+                        ease: "elastic.out(1, 0.75)"
+                    });
+                    
+                    // CTA animation
+                    gsap.to('.cta-section', {
+                        scrollTrigger: {
+                            trigger: '.cta-section',
+                            start: 'top 80%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.5,
+                        ease: "power2.out"
+                    });
+                    
+                    gsap.to('.cta-form', {
+                        scrollTrigger: {
+                            trigger: '.cta-section',
+                            start: 'top 80%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.2,
+                        ease: "elastic.out(1, 0.75)"
+                    });
+                    
+                    // Footer animation
+                    gsap.to('footer', {
+                        scrollTrigger: {
+                            trigger: 'footer',
+                            start: 'top 90%',
+                            toggleActions: 'play none none none'
+                        },
+                        y: 0,
+                        opacity: 1,
+                        duration: 1.5,
+                        ease: "power2.out"
+                    });
+                };
+                
+                // Wait for preloader to finish
+                setTimeout(animateElements, 1800);
+            }
+        });
+
+        // Auth Modal Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const authModal = document.getElementById('authModal');
+            const closeModal = document.getElementById('closeModal');
+            const modalTabs = document.querySelectorAll('.modal-tab');
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const passwordToggles = document.querySelectorAll('.toggle-password');
+            const signupLinks = document.querySelectorAll('[data-tab]');
+            const getStartedButtons = document.querySelectorAll('.cta-button, #ctaGetStarted, #heroGetStarted, #headerGetStarted');
+            
+            // Show modal 5 seconds after page elements appear
+            setTimeout(() => {
+                authModal.classList.add('active');
+            }, 7000); // 5 seconds after animations start (2s preloader + 5s)
+            
+            // Close modal
+            closeModal.addEventListener('click', () => {
+                authModal.classList.remove('active');
+            });
+            
+            // Tab switching
+            modalTabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Remove active class from all tabs
+                    modalTabs.forEach(t => t.classList.remove('active'));
+                    // Add active class to clicked tab
+                    tab.classList.add('active');
+                    
+                    // Show the corresponding form
+                    const tabId = tab.getAttribute('data-tab');
+                    loginForm.classList.toggle('active', tabId === 'login');
+                    signupForm.classList.toggle('active', tabId === 'signup');
+                });
+            });
+            
+            // Toggle password visibility
+            passwordToggles.forEach(toggle => {
+                toggle.addEventListener('click', function() {
+                    const passwordInput = this.previousElementSibling;
+                    const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                    passwordInput.setAttribute('type', type);
+                    
+                    // Toggle eye icon
+                    this.querySelector('i').classList.toggle('fa-eye');
+                    this.querySelector('i').classList.toggle('fa-eye-slash');
+                });
+            });
+            
+            // Switch tabs from links
+            signupLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs
+                    modalTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to target tab
+                    document.querySelector(`.modal-tab[data-tab="${tabId}"]`).classList.add('active');
+                    
+                    // Show the corresponding form
+                    loginForm.classList.toggle('active', tabId === 'login');
+                    signupForm.classList.toggle('active', tabId === 'signup');
+                });
+            });
+            
+            // Show modal when Get Started buttons are clicked
+            getStartedButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    // Prevent form submission
+                    if (button.tagName === 'BUTTON') e.preventDefault();
+                    
+                    authModal.classList.add('active');
+                    
+                    // Switch to sign up form if coming from footer CTA
+                    if (button.id === 'ctaGetStarted') {
+                        modalTabs.forEach(t => t.classList.remove('active'));
+                        document.querySelector('.modal-tab[data-tab="signup"]').classList.add('active');
+                        loginForm.classList.remove('active');
+                        signupForm.classList.add('active');
+                    }
+                });
+            });
+            
+            // Close modal when clicking outside
+            authModal.addEventListener('click', (e) => {
+                if (e.target === authModal) {
+                    authModal.classList.remove('active');
+                }
+            });
+        });
+    </script>
 </body>
 </html>
